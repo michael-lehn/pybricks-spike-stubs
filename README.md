@@ -72,7 +72,7 @@ git clone https://github.com/michael-lehn/pybricks-spike-stubs
 Your directory now looks like:
 
 your_project/
-├── main.py
+├── ...
 ├── pybricks-spike-stubs/
 │   ├── make_stubs.sh
 │   └── stubs/
@@ -97,7 +97,7 @@ This will:
 After running the script, your project directory will contain:
 
 your_project/
-├── main.py
+├── ...
 ├── pyrightconfig.json
 └── stubs/
     └── pybricks/
