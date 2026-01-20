@@ -68,6 +68,7 @@ From your project root:
 
 ```bash
 git clone https://github.com/michael-lehn/pybricks-spike-stubs
+```
 
 Your directory now looks like:
 
