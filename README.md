@@ -71,7 +71,6 @@ git clone https://github.com/michael-lehn/pybricks-spike-stubs
 
 Your directory now looks like:
 
-```
 your_project/
 ├── main.py
 ├── pybricks-spike-stubs/
@@ -82,7 +81,6 @@ your_project/
 │           ├── pupdevices.pyi
 │           ├── parameters.pyi
 │           └── tools.pyi
-```
 
 ### 2. Run the setup script in your project
 
