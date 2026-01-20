@@ -117,11 +117,13 @@ your_project/
 
 The script creates the following configuration:
 
+```
 {
   "stubPath": "stubs",
   "typeCheckingMode": "basic",
   "reportMissingModuleSource": false
 }
+```
 
 The option reportMissingModuleSource = false is required because Pybricks
 modules exist only on the hub firmware, not on the host system.
