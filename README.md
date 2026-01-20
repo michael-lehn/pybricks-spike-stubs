@@ -77,12 +77,7 @@ your_project/
 ├── ...
 ├── pybricks-spike-stubs/
 │   ├── make_stubs.sh
-│   └── stubs/
-│       └── pybricks/
-│           ├── hubs.pyi
-│           ├── pupdevices.pyi
-│           ├── parameters.pyi
-│           └── tools.pyi
+│   └── README.md
 ```
 
 ### 2. Run the setup script in your project

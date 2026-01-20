@@ -211,4 +211,103 @@ EOF
 
 #-------------------------------------------------------------------------------
 
+mkdir -p stubs/robotics
+
+#-------------------------------------------------------------------------------
+cat > stubs/robotics/__init__.pyi <<'EOF'
+# Marker file so Pyright treats this as a package.
+
+from __future__ import annotations
+
+__all__: list[str]
+EOF
+
+#-------------------------------------------------------------------------------
+cat > stubs/robotics/imu.pyi <<'EOF'
+from __future__ import annotations
+from typing import Protocol, Tuple
+
+class IMU(Protocol):
+    """Generic IMU interface."""
+
+    def accel(self) -> tuple[float, float, float]: ...
+    """Returns (ax, ay, az) in m/s^2 or g depending on implementation."""
+
+    def gyro(self) -> tuple[float, float, float]: ...
+    """Returns (gx, gy, gz) in deg/s or rad/s depending on implementation."""
+
+    def rotation(self) -> tuple[float, float, float]: ...
+    """Returns (roll, pitch, yaw) in degrees (or radians) depending on implementation."""
+
+    def heading(self) -> float: ...
+    def reset_heading(self, value: float = ...) -> None: ...
+EOF
+
+#-------------------------------------------------------------------------------
+cat > stubs/robotics/led_matrix.pyi <<'EOF'
+from __future__ import annotations
+from typing import Iterable, Sequence
+
+class LEDMatrix:
+    """Simple LED matrix abstraction (e.g., 5x5)."""
+
+    def clear(self) -> None: ...
+    def off(self) -> None: ...
+    def on(self) -> None: ...
+
+    def set_pixel(self, x: int, y: int, value: int = ...) -> None: ...
+    """value typically 0..100 or 0..255 depending on implementation."""
+
+    def show(self, frame: Sequence[Sequence[int]]) -> None: ...
+    """frame is a 2D array-like brightness map."""
+
+    def text(self, s: str, *, scroll: bool = ..., delay_ms: int = ...) -> None: ...
+    def number(self, n: int) -> None: ...
+EOF
+
+#-------------------------------------------------------------------------------
+cat > stubs/robotics/buttons.pyi <<'EOF'
+from __future__ import annotations
+from enum import Enum
+from typing import Tuple
+
+class Button(Enum):
+    A: Button
+    B: Button
+    X: Button
+    Y: Button
+    UP: Button
+    DOWN: Button
+    LEFT: Button
+    RIGHT: Button
+    CENTER: Button
+
+class Buttons:
+    def pressed(self) -> tuple[Button, ...]: ...
+EOF
+
+#-------------------------------------------------------------------------------
+cat > stubs/robotics/time.pyi <<'EOF'
+from __future__ import annotations
+
+def sleep_ms(ms: int) -> None: ...
+def ticks_ms() -> int: ...
+def ticks_diff(new: int, old: int) -> int: ...
+EOF
+
+#-------------------------------------------------------------------------------
+cat > stubs/robotics/serial.pyi <<'EOF'
+from __future__ import annotations
+from typing import Optional
+
+class Serial:
+    def __init__(self, *, baudrate: int = ..., timeout_ms: int = ...) -> None: ...
+    def write(self, data: bytes) -> int: ...
+    def read(self, n: int = ...) -> bytes: ...
+    def readline(self) -> bytes: ...
+    def available(self) -> int: ...
+    def close(self) -> None: ...
+
+def open_serial(port: str, *, baudrate: int = ..., timeout_ms: int = ...) -> Serial: ...
+EOF
 
