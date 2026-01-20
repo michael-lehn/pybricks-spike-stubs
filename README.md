@@ -125,7 +125,7 @@ The script creates the following configuration:
 }
 ```
 
-The option reportMissingModuleSource = false is required because Pybricks
+The option `reportMissingModuleSource = false` is required because Pybricks
 modules exist only on the hub firmware, not on the host system.
 
 
