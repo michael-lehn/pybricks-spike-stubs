@@ -211,103 +211,88 @@ EOF
 
 #-------------------------------------------------------------------------------
 
-mkdir -p stubs/robotics
-
-#-------------------------------------------------------------------------------
-cat > stubs/robotics/__init__.pyi <<'EOF'
-# Marker file so Pyright treats this as a package.
-
+cat > stubs/pybricks/robotics.pyi <<'EOF'
 from __future__ import annotations
 
-__all__: list[str]
-EOF
+from typing import Any, Optional, Sequence, Tuple, Union, overload
 
-#-------------------------------------------------------------------------------
-cat > stubs/robotics/imu.pyi <<'EOF'
-from __future__ import annotations
-from typing import Protocol, Tuple
+from pybricks.parameters import Stop
+from pybricks.pupdevices import Motor
 
-class IMU(Protocol):
-    """Generic IMU interface."""
+_Number = Union[int, float]
 
-    def accel(self) -> tuple[float, float, float]: ...
-    """Returns (ax, ay, az) in m/s^2 or g depending on implementation."""
+class DriveBase:
+    def __init__(
+        self,
+        left_motor: Motor,
+        right_motor: Motor,
+        wheel_diameter: _Number,
+        axle_track: _Number,
+    ) -> None: ...
 
-    def gyro(self) -> tuple[float, float, float]: ...
-    """Returns (gx, gy, gz) in deg/s or rad/s depending on implementation."""
+    # Drive by distance / angle
+    def straight(self, distance: _Number, *, then: Stop = ..., wait: bool = ...) -> None: ...
+    def turn(self, angle: _Number, *, then: Stop = ..., wait: bool = ...) -> None: ...
 
-    def rotation(self) -> tuple[float, float, float]: ...
-    """Returns (roll, pitch, yaw) in degrees (or radians) depending on implementation."""
+    def arc(
+        self,
+        radius: _Number,
+        *,
+        angle: Optional[_Number] = ...,
+        distance: Optional[_Number] = ...,
+        then: Stop = ...,
+        wait: bool = ...,
+    ) -> None: ...
+    # Legacy (still mentioned in docs as being replaced by arc in newer versions).
+    def curve(self, radius: _Number, angle: _Number, *, then: Stop = ..., wait: bool = ...) -> None: ...
 
-    def heading(self) -> float: ...
-    def reset_heading(self, value: float = ...) -> None: ...
-EOF
+    # Common settings (returns current values when called without args)
+    @overload
+    def settings(self) -> Tuple[int, int, int, int]: ...
+    @overload
+    def settings(
+        self,
+        straight_speed: _Number,
+        straight_acceleration: Union[_Number, Tuple[_Number, _Number]],
+        turn_rate: _Number,
+        turn_acceleration: Union[_Number, Tuple[_Number, _Number]],
+    ) -> Tuple[int, int, int, int]: ...
 
-#-------------------------------------------------------------------------------
-cat > stubs/robotics/led_matrix.pyi <<'EOF'
-from __future__ import annotations
-from typing import Iterable, Sequence
+    # Run continuously
+    def drive(self, speed: _Number, turn_rate: _Number) -> None: ...
 
-class LEDMatrix:
-    """Simple LED matrix abstraction (e.g., 5x5)."""
+    # Stop modes
+    def stop(self) -> None: ...
+    def brake(self) -> None: ...
 
-    def clear(self) -> None: ...
-    def off(self) -> None: ...
-    def on(self) -> None: ...
+    # State / odometry-ish
+    def distance(self) -> int: ...
+    def angle(self) -> float: ...
+    def state(self) -> Tuple[int, int, int, int]: ...
+    def reset(self, distance: _Number = ..., angle: _Number = ...) -> None: ...
 
-    def set_pixel(self, x: int, y: int, value: int = ...) -> None: ...
-    """value typically 0..100 or 0..255 depending on implementation."""
+    # Status
+    def done(self) -> bool: ...
+    def stalled(self) -> bool: ...
 
-    def show(self, frame: Sequence[Sequence[int]]) -> None: ...
-    """frame is a 2D array-like brightness map."""
+    # Gyro usage
+    def use_gyro(self, use_gyro: bool) -> None: ...
 
-    def text(self, s: str, *, scroll: bool = ..., delay_ms: int = ...) -> None: ...
-    def number(self, n: int) -> None: ...
-EOF
+    # Advanced PID controls (real type would be Control; keep loose)
+    distance_control: Any
+    heading_control: Any
 
-#-------------------------------------------------------------------------------
-cat > stubs/robotics/buttons.pyi <<'EOF'
-from __future__ import annotations
-from enum import Enum
-from typing import Tuple
 
-class Button(Enum):
-    A: Button
-    B: Button
-    X: Button
-    Y: Button
-    UP: Button
-    DOWN: Button
-    LEFT: Button
-    RIGHT: Button
-    CENTER: Button
+class Car:
+    def __init__(
+        self,
+        steer_motor: Motor,
+        drive_motors: Union[Motor, Sequence[Motor]],
+        torque_limit: _Number = ...,
+    ) -> None: ...
 
-class Buttons:
-    def pressed(self) -> tuple[Button, ...]: ...
-EOF
-
-#-------------------------------------------------------------------------------
-cat > stubs/robotics/time.pyi <<'EOF'
-from __future__ import annotations
-
-def sleep_ms(ms: int) -> None: ...
-def ticks_ms() -> int: ...
-def ticks_diff(new: int, old: int) -> int: ...
-EOF
-
-#-------------------------------------------------------------------------------
-cat > stubs/robotics/serial.pyi <<'EOF'
-from __future__ import annotations
-from typing import Optional
-
-class Serial:
-    def __init__(self, *, baudrate: int = ..., timeout_ms: int = ...) -> None: ...
-    def write(self, data: bytes) -> int: ...
-    def read(self, n: int = ...) -> bytes: ...
-    def readline(self) -> bytes: ...
-    def available(self) -> int: ...
-    def close(self) -> None: ...
-
-def open_serial(port: str, *, baudrate: int = ..., timeout_ms: int = ...) -> Serial: ...
+    def steer(self, percentage: _Number) -> None: ...
+    def drive_power(self, power: _Number) -> None: ...
+    def drive_speed(self, speed: _Number) -> None: ...
 EOF
 
